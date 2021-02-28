@@ -3,4 +3,4 @@
 **Group #7**    
 By Bryl Andrii and Poizd Vyacheslav 
 
-You can download separate labs. from releases.
+You can download separate labs. from _Releases_.
