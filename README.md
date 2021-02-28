@@ -1,3 +1,3 @@
 # TALabs
-Group #7    
+**Group #7**    
 By Bryl Andrii and Poizd Vyacheslav
