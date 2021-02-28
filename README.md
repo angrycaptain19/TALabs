@@ -1,4 +1,6 @@
 # Theory of algorithms
 ## Laboratory works
 **Group #7**    
-By Bryl Andrii and Poizd Vyacheslav
+By Bryl Andrii and Poizd Vyacheslav 
+
+You can download separate laboratories from releases.
