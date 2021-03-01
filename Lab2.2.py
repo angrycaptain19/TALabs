@@ -16,24 +16,24 @@ def binomial(m, n):
     elif m == 0 or m == n:
         return 1
     else:
-        bi = factorial(n) // (factorial(m) * factorial(n - m))
-        return bi
+        # bi = factorial(n) // (factorial(m) * factorial(n - m))
+        return binomial(m, n - 1) + binomial(m - 1, n - 1) # bi
 
 
-"""
+
 def factorial(n):
     if n == 0:
         return 1
     return n * factorial(n - 1)
+
+
 """
-
-
 def factorial(m):
     prod = 1
     for n in range(2, m + 1):
         prod = prod * n
     return prod
-
+"""
 
 if __name__ == '__main__':
     main()
