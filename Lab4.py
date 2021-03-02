@@ -14,15 +14,15 @@ bub1100 = blessRNG100K.copy()
 ins1100 = blessRNG100K.copy()
 sel1100 = blessRNG100K.copy()
 
-pogChamp1K = [x for x in range(0, 1000)]
+pogChamp1K = [x for x in range(1000)]
 bub21 = pogChamp1K.copy()
 ins21 = pogChamp1K.copy()
 sel21 = pogChamp1K.copy()
-pogChamp10K = [x for x in range(0, 10000)]
+pogChamp10K = [x for x in range(10000)]
 bub210 = pogChamp10K.copy()
 ins210 = pogChamp10K.copy()
 sel210 = pogChamp10K.copy()
-pogChamp100K = [x for x in range(0, 100000)]
+pogChamp100K = [x for x in range(100000)]
 bub2100 = pogChamp100K.copy()
 ins2100 = pogChamp100K.copy()
 sel2100 = pogChamp100K.copy()
@@ -106,7 +106,7 @@ def main():
 def bubbleSort(arr):
     n = len(arr)
     for i in range(n - 1):
-        for j in range(0, n - i - 1):
+        for j in range(n - i - 1):
             if arr[j] > arr[j + 1]:
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
 

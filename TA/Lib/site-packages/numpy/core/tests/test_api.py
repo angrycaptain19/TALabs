@@ -95,7 +95,7 @@ def test_array_array():
 
     # test recursion
     nested = 1.5
-    for i in range(np.MAXDIMS):
+    for _ in range(np.MAXDIMS):
         nested = [nested]
 
     # no error
@@ -186,7 +186,7 @@ def test_array_astype():
     assert_equal(a.T.strides, b.strides)
     b = a.astype('f4')
     assert_equal(a, b)
-    assert_(not (a is b))
+    assert_(a is not b)
 
     # copy=False parameter can sometimes skip a copy
     b = a.astype('f4', copy=False)
@@ -196,7 +196,7 @@ def test_array_astype():
     # forcing a copy if the layout is wrong
     b = a.astype('f4', order='F', copy=False)
     assert_equal(a, b)
-    assert_(not (a is b))
+    assert_(a is not b)
     assert_(b.flags.f_contiguous)
 
     b = a.astype('f4', order='C', copy=False)
@@ -232,7 +232,7 @@ def test_array_astype():
     # subok=False never returns a subclass
     b = a.astype('f4', subok=False, copy=False)
     assert_equal(a, b)
-    assert_(not (a is b))
+    assert_(a is not b)
     assert_(type(b) is not MyNDArray)
 
     # Make sure converting from string object to fixed length string

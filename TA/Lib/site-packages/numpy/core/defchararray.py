@@ -1947,11 +1947,7 @@ class chararray(ndarray):
                 offset=0, strides=None, order='C'):
         global _globalvar
 
-        if unicode:
-            dtype = unicode_
-        else:
-            dtype = string_
-
+        dtype = unicode_ if unicode else string_
         # force itemsize to be a Python int, since using NumPy integer
         # types results in itemsize.itemsize being used as the size of
         # strings in the new array.
@@ -1988,11 +1984,7 @@ class chararray(ndarray):
 
         if isinstance(val, character):
             temp = val.rstrip()
-            if len(temp) == 0:
-                val = ''
-            else:
-                val = temp
-
+            val = '' if len(temp) == 0 else temp
         return val
 
     # IMPLEMENTATION NOTE: Most of the methods of this class are
@@ -2674,11 +2666,7 @@ def array(obj, itemsize=None, copy=True, unicode=None, order=None):
     """
     if isinstance(obj, (bytes, str)):
         if unicode is None:
-            if isinstance(obj, str):
-                unicode = True
-            else:
-                unicode = False
-
+            unicode = isinstance(obj, str)
         if itemsize is None:
             itemsize = len(obj)
         shape = len(obj) // itemsize
@@ -2704,16 +2692,8 @@ def array(obj, itemsize=None, copy=True, unicode=None, order=None):
                 itemsize //= 4
 
         if unicode is None:
-            if issubclass(obj.dtype.type, unicode_):
-                unicode = True
-            else:
-                unicode = False
-
-        if unicode:
-            dtype = unicode_
-        else:
-            dtype = string_
-
+            unicode = issubclass(obj.dtype.type, unicode_)
+        dtype = unicode_ if unicode else string_
         if order is not None:
             obj = numpy.asarray(obj, order=order)
         if (copy or
@@ -2723,19 +2703,18 @@ def array(obj, itemsize=None, copy=True, unicode=None, order=None):
             obj = obj.astype((dtype, int(itemsize)))
         return obj
 
-    if isinstance(obj, ndarray) and issubclass(obj.dtype.type, object):
-        if itemsize is None:
-            # Since no itemsize was specified, convert the input array to
-            # a list so the ndarray constructor will automatically
-            # determine the itemsize for us.
-            obj = obj.tolist()
-            # Fall through to the default case
+    if (
+        isinstance(obj, ndarray)
+        and issubclass(obj.dtype.type, object)
+        and itemsize is None
+    ):
+        # Since no itemsize was specified, convert the input array to
+        # a list so the ndarray constructor will automatically
+        # determine the itemsize for us.
+        obj = obj.tolist()
+        # Fall through to the default case
 
-    if unicode:
-        dtype = unicode_
-    else:
-        dtype = string_
-
+    dtype = unicode_ if unicode else string_
     if itemsize is None:
         val = narray(obj, dtype=dtype, order=order, subok=True)
     else:

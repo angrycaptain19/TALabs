@@ -527,13 +527,12 @@ class iinfo:
         """Minimum value of given dtype."""
         if self.kind == 'u':
             return 0
-        else:
-            try:
-                val = iinfo._min_vals[self.key]
-            except KeyError:
-                val = int(-(1 << (self.bits-1)))
-                iinfo._min_vals[self.key] = val
-            return val
+        try:
+            val = iinfo._min_vals[self.key]
+        except KeyError:
+            val = int(-(1 << (self.bits-1)))
+            iinfo._min_vals[self.key] = val
+        return val
 
     @property
     def max(self):

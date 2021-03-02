@@ -55,9 +55,7 @@ def is_released(config):
     if v is None:
         raise ValueError("Could not get version")
     pv = LooseVersion(vstring=v).version
-    if len(pv) > 3:
-        return False
-    return True
+    return len(pv) <= 3
 
 def get_api_versions(apiversion, codegen_dir):
     """
@@ -89,7 +87,7 @@ def check_api_version(apiversion, codegen_dir):
     # updated. Any modification in those .txt files should be reflected
     # in the api and eventually abi versions.
     # To compute the checksum of the current API, use numpy/core/cversions.py
-    if not curapi_hash == api_hash:
+    if curapi_hash != api_hash:
         msg = ("API mismatch detected, the C API version "
                "numbers have to be updated. Current C api version is %d, "
                "with checksum %s, but recorded checksum for C API version %d "
@@ -326,8 +324,7 @@ def pyod(filename):
     with open(filename, 'rb') as fid:
         yo2 = [oct(o)[2:] for o in fid.read()]
     for i in range(0, len(yo2), 16):
-        line = ['%07d' % int(oct(i)[2:])]
-        line.extend(['%03d' % int(c) for c in yo2[i:i+16]])
+        line = ['%07d' % int(oct(i)[2:]), *['%03d' % int(c) for c in yo2[i:i+16]]]
         out.append(" ".join(line))
     return out
 

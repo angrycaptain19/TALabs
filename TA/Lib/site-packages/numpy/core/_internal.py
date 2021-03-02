@@ -4,6 +4,7 @@ A place for internal code
 Some things are more easily handled Python.
 
 """
+
 import ast
 import re
 import sys
@@ -17,10 +18,7 @@ except ImportError:
 
 IS_PYPY = platform.python_implementation() == 'PyPy'
 
-if sys.byteorder == 'little':
-    _nbo = '<'
-else:
-    _nbo = '>'
+_nbo = '<' if sys.byteorder == 'little' else '>'
 
 def _makenames_list(adict, align):
     allfields = []
@@ -35,10 +33,7 @@ def _makenames_list(adict, align):
         if num < 0:
             raise ValueError("invalid offset.")
         format = dtype(obj[0], align=align)
-        if n > 2:
-            title = obj[2]
-        else:
-            title = None
+        title = obj[2] if n > 2 else None
         allfields.append((fname, format, num, title))
     # sort by offsets
     allfields.sort(key=lambda x: x[2])
@@ -88,18 +83,16 @@ def _array_descr(descriptor):
     fields = descriptor.fields
     if fields is None:
         subdtype = descriptor.subdtype
-        if subdtype is None:
-            if descriptor.metadata is None:
-                return descriptor.str
-            else:
-                new = descriptor.metadata.copy()
-                if new:
-                    return (descriptor.str, new)
-                else:
-                    return descriptor.str
-        else:
+        if subdtype is not None:
             return (_array_descr(subdtype[0]), subdtype[1])
 
+        if descriptor.metadata is None:
+            return descriptor.str
+        new = descriptor.metadata.copy()
+        if new:
+            return (descriptor.str, new)
+        else:
+            return descriptor.str
     names = descriptor.names
     ordered_fields = [fields[x] + (x,) for x in names]
     result = []
@@ -113,10 +106,7 @@ def _array_descr(descriptor):
             raise ValueError(
                 "dtype.descr is not defined for types with overlapping or "
                 "out-of-order fields")
-        if len(field) > 3:
-            name = (field[2], field[3])
-        else:
-            name = field[2]
+        name = (field[2], field[3]) if len(field) > 3 else field[2]
         if field[0].subdtype:
             tup = (name, _array_descr(field[0].subdtype[0]),
                    field[0].subdtype[1])
@@ -193,10 +183,7 @@ def _commastring(astr):
         if order in ('|', '=', _nbo):
             order = ''
         dtype = order + dtype
-        if (repeats == ''):
-            newitem = dtype
-        else:
-            newitem = (dtype, ast.literal_eval(repeats))
+        newitem = dtype if (repeats == '') else (dtype, ast.literal_eval(repeats))
         result.append(newitem)
 
     return result
@@ -224,8 +211,6 @@ def _getintp_ctype():
         char = dtype('p').char
         if char == 'i':
             val = ctypes.c_int
-        elif char == 'l':
-            val = ctypes.c_long
         elif char == 'q':
             val = ctypes.c_longlong
         else:
@@ -258,10 +243,7 @@ class _ctypes:
             self._data = self._ctypes.c_void_p(ptr)
             self._data._objects = array
 
-        if self._arr.ndim == 0:
-            self._zerod = True
-        else:
-            self._zerod = False
+        self._zerod = self._arr.ndim == 0
 
     def data_as(self, obj):
         """
@@ -366,8 +348,8 @@ def _newnames(datatype, order):
     nameslist = list(oldnames)
     if isinstance(order, str):
         order = [order]
-    seen = set()
     if isinstance(order, (list, tuple)):
+        seen = set()
         for name in order:
             try:
                 nameslist.remove(name)
@@ -541,7 +523,7 @@ class _Stream:
         if callable(c):
             i = 0
             while i < len(self.s) and not c(self.s[i]):
-                i = i + 1
+                i += 1
             return self.advance(i)
         else:
             i = self.s.index(c)
@@ -604,11 +586,7 @@ def __dtype_from_pep3118(stream, is_subdtype):
 
         # Item sizes
         itemsize_str = stream.consume_until(lambda c: not c.isdigit())
-        if itemsize_str:
-            itemsize = int(itemsize_str)
-        else:
-            itemsize = 1
-
+        itemsize = int(itemsize_str) if itemsize_str else 1
         # Data types
         is_padding = False
 
@@ -616,11 +594,7 @@ def __dtype_from_pep3118(stream, is_subdtype):
             value, align = __dtype_from_pep3118(
                 stream, is_subdtype=True)
         elif stream.next in type_map_chars:
-            if stream.next == 'Z':
-                typechar = stream.advance(2)
-            else:
-                typechar = stream.advance(1)
-
+            typechar = stream.advance(2) if stream.next == 'Z' else stream.advance(1)
             is_padding = (typechar == 'x')
             dtypechar = type_map[typechar]
             if dtypechar in 'USV':
@@ -672,11 +646,7 @@ def __dtype_from_pep3118(stream, is_subdtype):
             value = dtype((value, shape))
 
         # Field name
-        if stream.consume(':'):
-            name = stream.consume_until(':')
-        else:
-            name = None
-
+        name = stream.consume_until(':') if stream.consume(':') else None
         if not (is_padding and name is None):
             if name is not None and name in field_spec['names']:
                 raise RuntimeError(f"Duplicate field name '{name}' in PEP3118 format")
@@ -718,7 +688,7 @@ def _fix_names(field_spec):
             name = f'f{j}'
             if name not in names:
                 break
-            j = j + 1
+            j += 1
         names[i] = name
 
 def _add_trailing_padding(value, padding):
