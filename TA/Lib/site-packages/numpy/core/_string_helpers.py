@@ -37,8 +37,7 @@ def english_lower(s):
     >>> english_lower('')
     ''
     """
-    lowered = s.translate(LOWER_TABLE)
-    return lowered
+    return s.translate(LOWER_TABLE)
 
 
 def english_upper(s):
@@ -65,8 +64,7 @@ def english_upper(s):
     >>> english_upper('')
     ''
     """
-    uppered = s.translate(UPPER_TABLE)
-    return uppered
+    return s.translate(UPPER_TABLE)
 
 
 def english_capitalize(s):

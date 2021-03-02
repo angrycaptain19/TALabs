@@ -248,9 +248,7 @@ def _is_packed(dtype):
         if fld_offset != total_offset:
             return False
         total_offset += fld_dtype.itemsize
-    if total_offset != dtype.itemsize:
-        return False
-    return True
+    return total_offset == dtype.itemsize
 
 
 def _struct_list_str(dtype):

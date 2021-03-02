@@ -72,10 +72,7 @@ class AbstractTest(object):
         map_names = self.features_map.get(feature_name, feature_name)
         if isinstance(map_names, str):
             return map_names in self.features_flags
-        for f in map_names:
-            if f in self.features_flags:
-                return True
-        return False
+        return any(f in self.features_flags for f in map_names)
 
     def load_flags_cpuinfo(self, magic_key):
         self.features_flags = self.get_cpuinfo_item(magic_key)

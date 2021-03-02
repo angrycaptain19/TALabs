@@ -60,10 +60,7 @@ def _from_ctypes_structure(t):
             names=names,
             itemsize=ctypes.sizeof(t)))
     else:
-        fields = []
-        for fname, ftyp in t._fields_:
-            fields.append((fname, dtype_from_ctypes_type(ftyp)))
-
+        fields = [(fname, dtype_from_ctypes_type(ftyp)) for fname, ftyp in t._fields_]
         # by default, ctypes structs are aligned
         return np.dtype(fields, align=True)
 

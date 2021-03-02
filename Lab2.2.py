@@ -13,7 +13,7 @@ def main():
 def binomial(m, n):
     if m > n:
         return 0
-    elif m == 0 or m == n:
+    elif m in [0, n]:
         return 1
     else:
         # bi = factorial(n) // (factorial(m) * factorial(n - m))

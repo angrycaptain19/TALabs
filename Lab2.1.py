@@ -1,5 +1,5 @@
 def main():
-    for n in range(0, 226):
+    for n in range(226):
         print(n)
         if isPowerOfTwo(n):
             print('iterative: Yes')
